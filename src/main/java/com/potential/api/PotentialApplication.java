@@ -1,13 +1,13 @@
-package com.fisher.api;
+package com.potential.api;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class FisherApplication {
+public class PotentialApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(FisherApplication.class, args);
+        SpringApplication.run(PotentialApplication.class, args);
     }
 
 }
