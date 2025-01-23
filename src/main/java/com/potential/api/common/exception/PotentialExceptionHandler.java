@@ -7,13 +7,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class FisherExceptionHandler {
-    @ExceptionHandler(FisherException.class)
-    public final ResponseEntity<ResponseDto> handleFisherException(FisherException fisherException) {
+public class PotentialExceptionHandler {
+    @ExceptionHandler(PotentialException.class)
+    public final ResponseEntity<ResponseDto> handleFisherException(PotentialException potentialException) {
         ResponseDto responseDto = new ResponseDto(
-                fisherException.getStatus(),
-                fisherException.getMessage()
+                potentialException.getStatus(),
+                potentialException.getMessage()
         );
-        return new ResponseEntity<>(responseDto, HttpStatusCode.valueOf(fisherException.getStatus()));
+        return new ResponseEntity<>(responseDto, HttpStatusCode.valueOf(potentialException.getStatus()));
     }
 }

@@ -2,7 +2,7 @@ package com.potential.api.common.component;
 
 import com.potential.api.common.enums.Error;
 import com.potential.api.common.enums.Role;
-import com.potential.api.common.exception.FisherException;
+import com.potential.api.common.exception.PotentialException;
 import com.potential.api.model.RefreshToken;
 import com.potential.api.repository.RefreshTokenRepository;
 import io.jsonwebtoken.Claims;
@@ -25,7 +25,7 @@ import org.springframework.util.StringUtils;
 
 @Component
 @RequiredArgsConstructor
-public class JwtProvider {
+public class JwtProviderComponent {
     @Value("${secret-key}")
     private String secretKey;
 
@@ -91,7 +91,7 @@ public class JwtProvider {
             return claims.getPayload().get("id", String.class);
 
         } catch (Exception exception) {
-            throw new FisherException(Error.FORBIDDEN.getStatus(), "토큰에 대한 접근 권한이 존재하지 않습니다!");
+            throw new PotentialException(Error.FORBIDDEN.getStatus(), "토큰에 대한 접근 권한이 존재하지 않습니다!");
         }
     }
 

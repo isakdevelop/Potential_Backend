@@ -5,7 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JwtInfo {
+public class JwtInformationComponent {
     public String getUserIdFromJWT() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getName();

@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class FisherException extends RuntimeException{
+public class PotentialException extends RuntimeException{
     private int status;
     private String message;
 }
