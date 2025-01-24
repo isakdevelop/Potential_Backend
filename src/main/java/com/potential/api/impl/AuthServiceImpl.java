@@ -1,9 +1,9 @@
 package com.potential.api.impl;
 
 import com.nimbusds.oauth2.sdk.token.RefreshToken;
-import com.potential.api.common.component.JwtProvider;
+import com.potential.api.common.component.JwtProviderComponent;
 import com.potential.api.common.enums.Error;
-import com.potential.api.common.exception.FisherException;
+import com.potential.api.common.exception.PotentialException;
 import com.potential.api.dto.request.LoginRequestDto;
 import com.potential.api.dto.response.LoginResponseDto;
 import com.potential.api.model.User;
@@ -19,20 +19,20 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtProvider jwtProvider;
+    private final JwtProviderComponent jwtProviderComponent;
 
     @Override
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
         User user = userRepository.findByUserName(loginRequestDto.getUserName())
-                .orElseThrow(() -> new FisherException(Error.NOT_FOUND.getStatus(), Error.NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new PotentialException(Error.NOT_FOUND.getStatus(), Error.NOT_FOUND.getMessage()));
 
        if (matchesPassword(loginRequestDto.getPassword(), user.getPassword())) {
-            String accessToken = jwtProvider.createAccessToken(user.getId(), user.getRole());
-            String refreshToken = jwtProvider.createRefreshToken(user.getId());
+            String accessToken = jwtProviderComponent.createAccessToken(user.getId(), user.getRole());
+            String refreshToken = jwtProviderComponent.createRefreshToken(user.getId());
 
             return new LoginResponseDto(HttpStatus.OK.value(), "로그인에 성공하였습니다.", accessToken, refreshToken, 3600, user.getRole());
        } else {
-           throw new FisherException(Error.UNAUTHORIZED.getStatus(), Error.UNAUTHORIZED.getMessage());
+           throw new PotentialException(Error.UNAUTHORIZED.getStatus(), Error.UNAUTHORIZED.getMessage());
        }
 
     }

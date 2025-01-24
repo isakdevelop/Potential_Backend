@@ -32,8 +32,8 @@ public class User extends BaseEntity{
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    @Column(name = "profile", nullable = false)
-    private String profile;
+    @Column(name = "profilePath", nullable = false)
+    private String profilePath;
 
     @Column(name = "role", nullable = false)
     @Enumerated
@@ -42,4 +42,16 @@ public class User extends BaseEntity{
     @Column(name = "oAuthType", nullable = false)
     @Enumerated
     private OAuthType oAuthType;
+
+    public void changeUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void changEmail(String email) {
+        this.email = email;
+    }
+
+    public void changeProfilePath(String profilePath) {
+        this.profilePath = profilePath;
+    }
 }
