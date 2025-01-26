@@ -11,7 +11,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OAuthUser extends BaseEntity implements OAuth2User {
-    private String id;
+    private String providerName;
 
     @Override
     public Map<String, Object> getAttributes() {
@@ -25,6 +25,6 @@ public class OAuthUser extends BaseEntity implements OAuth2User {
 
     @Override
     public String getName() {
-        return this.id;
+        return this.providerName;
     }
 }
