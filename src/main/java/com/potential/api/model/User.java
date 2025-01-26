@@ -1,6 +1,7 @@
 package com.potential.api.model;
 
 import com.potential.api.common.enums.OAuthType;
+import com.potential.api.common.enums.ReceiveEmail;
 import com.potential.api.common.enums.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -43,12 +44,20 @@ public class User extends BaseEntity{
     @Enumerated
     private OAuthType oAuthType;
 
+    @Column(name = "receiveEmail")
+    @Enumerated
+    private ReceiveEmail receiveEmail;
+
     public void changeUserName(String userName) {
         this.userName = userName;
     }
 
     public void changEmail(String email) {
         this.email = email;
+    }
+
+    public void changeReceiveEmail(String agree) {
+        this.receiveEmail = ReceiveEmail.valueOf(agree);
     }
 
     public void changeProfilePath(String profilePath) {

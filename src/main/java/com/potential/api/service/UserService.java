@@ -3,6 +3,7 @@ package com.potential.api.service;
 import com.potential.api.dto.ResponseDto;
 import com.potential.api.dto.request.UserEmailRequestDto;
 import com.potential.api.dto.request.UserNameRequestDto;
+import com.potential.api.dto.request.UserReceiveEmailRequestDto;
 import java.io.IOException;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,6 +17,8 @@ public interface UserService {
     ResponseDto validateEmail(UserEmailRequestDto userEmailRequestDto);
 
     ResponseDto changeUserEmail(UserEmailRequestDto userEmailRequestDto);
+
+    ResponseDto receiveEmail(UserReceiveEmailRequestDto userReceiveEmailDto);
 
     ResponseDto changeProfile(MultipartFile image) throws IOException;
 }

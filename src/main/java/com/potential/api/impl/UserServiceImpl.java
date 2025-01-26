@@ -3,11 +3,13 @@ package com.potential.api.impl;
 import com.potential.api.common.component.FileDeleteComponent;
 import com.potential.api.common.component.ImageStorageComponent;
 import com.potential.api.common.component.JwtInformationComponent;
+import com.potential.api.common.component.VariableComponent;
 import com.potential.api.common.enums.Error;
 import com.potential.api.common.exception.PotentialException;
 import com.potential.api.dto.ResponseDto;
 import com.potential.api.dto.request.UserEmailRequestDto;
 import com.potential.api.dto.request.UserNameRequestDto;
+import com.potential.api.dto.request.UserReceiveEmailRequestDto;
 import com.potential.api.model.User;
 import com.potential.api.repository.UserRepository;
 import com.potential.api.service.UserService;
@@ -25,6 +27,7 @@ public class UserServiceImpl implements UserService {
     private final JwtInformationComponent jwtInformationComponent;
     private final ImageStorageComponent imageStorageComponent;
     private final FileDeleteComponent fileDeleteComponent;
+    private final VariableComponent variableComponent;
 
     @Override
     public ResponseDto checkDuplicateUserName(UserNameRequestDto userNameRequestDto) {
@@ -38,8 +41,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public ResponseDto changeUserName(UserNameRequestDto userNameRequestDto) {
-        User user = userRepository.findById(jwtInformationComponent.getUserIdFromJWT())
-                .orElseThrow(() -> new PotentialException(Error.FORBIDDEN.getStatus(), Error.FORBIDDEN.getMessage()));
+        User user = certificationUserJWT(jwtInformationComponent.getUserIdFromJWT());
         user.changeUserName(userNameRequestDto.getUserName());
 
         return new ResponseDto(HttpStatus.OK.value(), "닉네임 변경이 완료되었습니다.");
@@ -56,24 +58,35 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseDto validateEmail(UserEmailRequestDto userEmailRequestDto) {
-        
+        User user = certificationUserJWT(jwtInformationComponent.getUserIdFromJWT());
+
+
+
         return null;
     }
 
     @Transactional
     @Override
     public ResponseDto changeUserEmail(UserEmailRequestDto userEmailRequestDto) {
-        User user = userRepository.findById(jwtInformationComponent.getUserIdFromJWT())
-                .orElseThrow(() -> new PotentialException(Error.FORBIDDEN.getStatus(), Error.FORBIDDEN.getMessage()));
+        User user = certificationUserJWT(jwtInformationComponent.getUserIdFromJWT());
+
         user.changEmail(userEmailRequestDto.getEmail());
 
         return new ResponseDto(HttpStatus.OK.value(), "이메일 변경이 완료되었습니다.");
     }
 
     @Override
+    public ResponseDto receiveEmail(UserReceiveEmailRequestDto userReceiveEmailDto) {
+        User user = certificationUserJWT(jwtInformationComponent.getUserIdFromJWT());
+
+        user.changeReceiveEmail(userReceiveEmailDto.getAgree());
+
+        return new ResponseDto(HttpStatus.OK.value(), "이메일 수신 동의 변경이 완료되었습니다.");
+    }
+
+    @Override
     public ResponseDto changeProfile(MultipartFile image) throws IOException {
-        User user = userRepository.findById(jwtInformationComponent.getUserIdFromJWT())
-                .orElseThrow(() -> new PotentialException(Error.FORBIDDEN.getStatus(), Error.FORBIDDEN.getMessage()));
+        User user = certificationUserJWT(jwtInformationComponent.getUserIdFromJWT());
 
         fileDeleteComponent.deleteFile(user.getProfilePath());
 
@@ -84,4 +97,9 @@ public class UserServiceImpl implements UserService {
         return new ResponseDto(HttpStatus.OK.value(), "프로필 수정이 완료되었습니다.");
     }
 
+
+    private User certificationUserJWT(String jwt) {
+        return userRepository.findById(jwtInformationComponent.getUserIdFromJWT())
+                .orElseThrow(() -> new PotentialException(Error.FORBIDDEN.getStatus(), Error.FORBIDDEN.getMessage()));
+    }
 }
