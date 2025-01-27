@@ -10,7 +10,9 @@ import com.potential.api.dto.ResponseDto;
 import com.potential.api.dto.request.UserEmailRequestDto;
 import com.potential.api.dto.request.UserNameRequestDto;
 import com.potential.api.dto.request.UserReceiveEmailRequestDto;
+import com.potential.api.model.EmailCertification;
 import com.potential.api.model.User;
+import com.potential.api.repository.EmailCertificationRepository;
 import com.potential.api.repository.UserRepository;
 import com.potential.api.service.UserService;
 import java.io.IOException;
@@ -24,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final EmailCertificationRepository emailCertificationRepository;
     private final JwtInformationComponent jwtInformationComponent;
     private final ImageStorageComponent imageStorageComponent;
     private final FileDeleteComponent fileDeleteComponent;
@@ -60,9 +63,14 @@ public class UserServiceImpl implements UserService {
     public ResponseDto validateEmail(UserEmailRequestDto userEmailRequestDto) {
         User user = certificationUserJWT(jwtInformationComponent.getUserIdFromJWT());
 
+        EmailCertification email = emailCertificationRepository.findById(userEmailRequestDto.getEmail())
+                .orElseThrow(() -> new PotentialException(Error.FORBIDDEN.getStatus(), "존재하지 않은 이메일입니다."));
 
+        if (!email.getCertificationNumber().equals(userEmailRequestDto.getPassword())) {
+            throw new PotentialException(Error.UNAUTHORIZED.getStatus(), "비밀번호가 일치하지 않습니다.");
+        }
 
-        return null;
+        return new ResponseDto(HttpStatus.OK.value(), "메일 인증이 완료되었습니다.");
     }
 
     @Transactional
