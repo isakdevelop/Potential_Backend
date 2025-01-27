@@ -105,7 +105,6 @@ public class UserServiceImpl implements UserService {
         return new ResponseDto(HttpStatus.OK.value(), "프로필 수정이 완료되었습니다.");
     }
 
-
     private User certificationUserJWT(String jwt) {
         return userRepository.findById(jwtInformationComponent.getUserIdFromJWT())
                 .orElseThrow(() -> new PotentialException(Error.FORBIDDEN.getStatus(), Error.FORBIDDEN.getMessage()));
