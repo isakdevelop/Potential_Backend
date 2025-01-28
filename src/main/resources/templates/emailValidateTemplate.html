@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Email Template</title>
+</head>
+<body>
+<div style="font-family: Arial, sans-serif; margin: 0 auto; padding: 20px; max-width: 600px; border: 1px solid #e0e0e0; border-radius: 10px; background-color: #f9f9f9; text-align: center;">
+    <div style="font-size: 24px; font-weight: bold; color: #333; margin-bottom: 20px;">[[${title}]]</div>
+    <p>[[${subTitle}]]</p>
+    <div style="font-size: 48px; font-weight: bold; color: #ff4c4c; margin: 20px 0;">[[${code}]]</div>
+    <p style="font-size: 12px; color: #777; margin-top: 20px;">
+        만약 본인이 기능을 요청하지 않으셨다면 즉시 비밀번호를 변경하여 무단 로그인을 방지해 주세요.
+        <br>
+        <a href="https://example.com/security-tips" style="color: #0073e6; text-decoration: none;">계정 보안 문서</a>에서 보안 관련 팁을 확인하실 수 있습니다.
+    </p>
+</div>
+</body>
+</html>
