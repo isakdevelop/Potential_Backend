@@ -1,9 +1,7 @@
 package com.potential.api.controller;
 
 import com.potential.api.dto.ResponseDto;
-import com.potential.api.dto.request.UserEmailRequestDto;
 import com.potential.api.dto.request.UserNameRequestDto;
-import com.potential.api.dto.request.UserReceiveEmailRequestDto;
 import com.potential.api.service.UserService;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
@@ -29,26 +27,6 @@ public class UserController {
     @PostMapping("/changeUserName")
     public ResponseEntity<ResponseDto> changeUserName(@RequestBody UserNameRequestDto userNameRequestDto) {
         return ResponseEntity.ok(userService.changeUserName(userNameRequestDto));
-    }
-
-    @PostMapping("/checkDuplicateEmail")
-    public ResponseEntity<ResponseDto> checkDuplicateEmail(@RequestBody UserEmailRequestDto userEmailRequestDto) {
-        return ResponseEntity.ok(userService.checkDuplicateEmail(userEmailRequestDto));
-    }
-
-    @PostMapping("/validateEmail")
-    public ResponseEntity<ResponseDto> validateEmail(@RequestBody UserEmailRequestDto userEmailRequestDto) {
-        return ResponseEntity.ok(userService.validateEmail(userEmailRequestDto));
-    }
-
-    @PostMapping("/changeEmail")
-    public ResponseEntity<ResponseDto> changeEmail(@RequestBody UserEmailRequestDto userEmailRequestDto) {
-        return ResponseEntity.ok(userService.changeUserEmail(userEmailRequestDto));
-    }
-
-    @PostMapping("/receiveEmail")
-    public ResponseEntity<ResponseDto> receiveEmail(@RequestBody UserReceiveEmailRequestDto userReceiveEmailDto) {
-        return ResponseEntity.ok(userService.receiveEmail(userReceiveEmailDto));
     }
 
     @PostMapping("/changProfile")
