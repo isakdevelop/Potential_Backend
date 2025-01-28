@@ -6,25 +6,19 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class VariableComponent {
-    @Value("${CHAR_LOWER}")
-    private static String CHAR_LOWER;
-
-    private static final String CHAR_UPPER = CHAR_LOWER.toUpperCase();
-
     @Value("${NUMBER}")
-    private static String NUMBER;
+    private String number;
 
-    @Value("${SPECIAL_CHARS}")
-    private static String SPECIAL_CHARS;
+    @Value("${PASSWORD_LENGTH}")
+    private int passwordLength;
 
-    private static final String PASSWORD_ALLOW_BASE = CHAR_LOWER + CHAR_UPPER + NUMBER + SPECIAL_CHARS;
-    private static final SecureRandom random = new SecureRandom();
+    private final SecureRandom random = new SecureRandom();
 
     public String generateRandomPassword() {
-        StringBuilder sb = new StringBuilder(12);
-        for (int i = 0; i < 12; i++) {
-            int rndCharAt = random.nextInt(PASSWORD_ALLOW_BASE.length());
-            char rndChar = PASSWORD_ALLOW_BASE.charAt(rndCharAt);
+        StringBuilder sb = new StringBuilder(passwordLength);
+        for (int i = 0; i < passwordLength; i++) {
+            int rndCharAt = random.nextInt(number.length());
+            char rndChar = number.charAt(rndCharAt);
             sb.append(rndChar);
         }
         return sb.toString();
