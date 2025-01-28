@@ -3,7 +3,6 @@ package com.potential.api.dto.request;
 import lombok.Getter;
 
 @Getter
-public class UserEmailRequestDto {
+public class EmailRequestDto {
     private String email;
-    private String password;
 }
