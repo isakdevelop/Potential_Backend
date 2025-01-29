@@ -30,7 +30,14 @@ public class AuthServiceImpl implements AuthService {
             String accessToken = jwtProviderComponent.createAccessToken(user.getId(), user.getRole());
             String refreshToken = jwtProviderComponent.createRefreshToken(user.getId());
 
-            return new LoginResponseDto(HttpStatus.OK.value(), "로그인에 성공하였습니다.", accessToken, refreshToken, 3600, user.getRole());
+            return LoginResponseDto.builder()
+                    .status(HttpStatus.OK.value())
+                    .message("로그인에 성공하였습니다.")
+                    .accessToken(accessToken)
+                    .refreshToken(refreshToken)
+                    .expirationTime(3600)
+                    .role(String.valueOf(user.getRole()))
+                    .build();
        } else {
            throw new PotentialException(Error.UNAUTHORIZED.getStatus(), Error.UNAUTHORIZED.getMessage());
        }

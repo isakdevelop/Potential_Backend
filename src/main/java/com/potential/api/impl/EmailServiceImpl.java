@@ -8,7 +8,6 @@ import com.potential.api.common.enums.Error;
 import com.potential.api.common.exception.PotentialException;
 import com.potential.api.dto.ResponseDto;
 import com.potential.api.dto.request.EmailRequestDto;
-import com.potential.api.dto.request.EmailReceiveRequestDto;
 import com.potential.api.dto.request.EmailValidateRequestDto;
 import com.potential.api.model.EmailCertification;
 import com.potential.api.model.User;
@@ -37,7 +36,10 @@ public class EmailServiceImpl implements EmailService {
                     Error.CONFLICT.getStatus(), Error.CONFLICT.getMessage());
         }
 
-        return new ResponseDto(HttpStatus.OK.value(), "사용 가능한 이메일입니다.");
+        return ResponseDto.builder()
+                .status(HttpStatus.OK.value())
+                .message("사용 가능한 이메일입니다.")
+                .build();
     }
 
     @Override
@@ -57,7 +59,10 @@ public class EmailServiceImpl implements EmailService {
                 .build();
 
         sendEmailComponent.sendEmail(emailRequestDto.getEmail(), "[Potential] 인증 이메일 안내", "emailValidateTemplate", context);
-        return new ResponseDto(HttpStatus.OK.value(), "메일 변경을 위한 메일 발송이 완료되었습니다.");
+        return ResponseDto.builder()
+                .status(HttpStatus.OK.value())
+                .message("메일 변경을 위한 메일 발송이 완료되었습니다.")
+                .build();
     }
 
     @Override
@@ -65,7 +70,10 @@ public class EmailServiceImpl implements EmailService {
         if (emailCertificationRepository.findById(emailValidateRequestDto.getEmail())
                 .orElseThrow(() -> new PotentialException(Error.CONFLICT.getStatus(), Error.CONFLICT.getMessage()))
                 .getCertificationNumber().equals(emailValidateRequestDto.getPassword())) {
-            return new ResponseDto(HttpStatus.OK.value(), "메일 인증이 완료되었습니다.");
+            return ResponseDto.builder()
+                    .status(HttpStatus.OK.value())
+                    .message("메일 인증이 완료되었습니다.")
+                    .build();
         } else {
             throw new PotentialException(Error.UNAUTHORIZED.getStatus(), "비밀번호가 일치하지 않습니다.");
         }
@@ -78,15 +86,9 @@ public class EmailServiceImpl implements EmailService {
 
         user.changEmail(emailRequestDto.getEmail());
 
-        return new ResponseDto(HttpStatus.OK.value(), "이메일 변경이 완료되었습니다.");
-    }
-
-    @Override
-    public ResponseDto receiveEmail(EmailReceiveRequestDto userReceiveEmailDto) {
-        User user = jwtInformationComponent.certificationUserJWT(jwtInformationComponent.getUserIdFromJWT());
-
-        user.changeReceiveEmail(userReceiveEmailDto.getAgree());
-
-        return new ResponseDto(HttpStatus.OK.value(), "이메일 수신 동의 변경이 완료되었습니다.");
+        return ResponseDto.builder()
+                .status(HttpStatus.OK.value())
+                .message("이메일 변경이 완료되었습니다.")
+                .build();
     }
 }
