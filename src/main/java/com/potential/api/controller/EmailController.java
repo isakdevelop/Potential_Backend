@@ -2,7 +2,6 @@ package com.potential.api.controller;
 
 import com.potential.api.dto.ResponseDto;
 import com.potential.api.dto.request.EmailRequestDto;
-import com.potential.api.dto.request.EmailReceiveRequestDto;
 import com.potential.api.dto.request.EmailValidateRequestDto;
 import com.potential.api.service.EmailService;
 import lombok.RequiredArgsConstructor;
@@ -36,10 +35,5 @@ public class EmailController {
     @PostMapping("/changeEmail")
     public ResponseEntity<ResponseDto> changeEmail(@RequestBody EmailRequestDto emailRequestDto) {
         return ResponseEntity.ok(emailService.changeUserEmail(emailRequestDto));
-    }
-
-    @PostMapping("/receiveEmail")
-    public ResponseEntity<ResponseDto> receiveEmail(@RequestBody EmailReceiveRequestDto userReceiveEmailDto) {
-        return ResponseEntity.ok(emailService.receiveEmail(userReceiveEmailDto));
     }
 }
