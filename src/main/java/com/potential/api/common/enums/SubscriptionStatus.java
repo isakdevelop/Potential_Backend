@@ -5,10 +5,10 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public enum ReceiveEmail {
+public enum SubscriptionStatus {
     Agree("동의"),
     Disagree("비동의")
     ;
 
-    private final String receiveEmail;
+    private final String subscriptionStatus;
 }
