@@ -1,11 +1,15 @@
 package com.potential.api.model;
 
 import com.potential.api.common.enums.OAuthType;
-import com.potential.api.common.enums.ReceiveEmail;
 import com.potential.api.common.enums.Role;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,16 +41,15 @@ public class User extends BaseEntity{
     private String profilePath;
 
     @Column(name = "role", nullable = false)
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     @Column(name = "oAuthType", nullable = false)
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private OAuthType oAuthType;
 
-    @Column(name = "receiveEmail")
-    @Enumerated
-    private ReceiveEmail receiveEmail;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Subscription> subscriptions = new ArrayList<>();
 
     public void changeUserName(String userName) {
         this.userName = userName;
@@ -54,10 +57,6 @@ public class User extends BaseEntity{
 
     public void changEmail(String email) {
         this.email = email;
-    }
-
-    public void changeReceiveEmail(String agree) {
-        this.receiveEmail = ReceiveEmail.valueOf(agree);
     }
 
     public void changeProfilePath(String profilePath) {
