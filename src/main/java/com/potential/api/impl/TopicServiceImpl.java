@@ -11,21 +11,24 @@ import com.potential.api.model.Subscription;
 import com.potential.api.model.Topic;
 import com.potential.api.model.User;
 import com.potential.api.repository.SubscriptionRepository;
-import com.potential.api.repository.TopicRepository;
-import com.potential.api.service.TopicService;
+import com.potential.api.repository.TopicService;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class TopicServiceImpl implements TopicService {
-    private final TopicRepository topicRepository;
+public class TopicServiceImpl implements com.potential.api.service.TopicService {
+    private final TopicService topicRepository;
     private final SubscriptionRepository subscriptionRepository;
     private final JwtInformationComponent jwtInformationComponent;
 
+    @Transactional
     @Override
     public ResponseDto switchSubscription(SwitchSubscriptionRequestDto switchSubscriptionRequestDto) {
         User user = jwtInformationComponent.certificationUserJWT(jwtInformationComponent.getUserIdFromJWT());
@@ -36,35 +39,66 @@ public class TopicServiceImpl implements TopicService {
 
         subscription.SwitchSubscription(switchSubscriptionRequestDto.getStatus());
 
+        subscriptionRepository.save(subscription);
+
         return ResponseDto.builder()
                 .status(HttpStatus.OK.value())
                 .message("이메일 수신 동의가 완료되었습니다.")
                 .build();
     }
 
+    @Transactional
     @Override
     public ResponseDto updateSubscription(UpdateSubscriptionRequestDto updateSubscriptionRequestDto) {
         User user = jwtInformationComponent.certificationUserJWT(jwtInformationComponent.getUserIdFromJWT());
 
-        subscriptionRepository.deleteAllByUser(user);
-
-        List<Subscription> subscriptions = updateSubscriptionRequestDto.getTopics().stream()
+        List<TopicType> requestedTopics = updateSubscriptionRequestDto.getTopics().stream()
                 .map(topicName -> {
-                    Topic topic = topicRepository.findByTopicType(TopicType.valueOf(topicName))
-                            .orElseThrow(() -> new PotentialException(Error.CONFLICT.getStatus(), Error.CONFLICT.getMessage()));
-                    return Subscription.builder()
-                            .user(user)
-                            .topic(topic)
-                            .topicType(topic.getTopicType())
-                            .build();
+                    try {
+                        return TopicType.valueOf(topicName);
+                    } catch (IllegalArgumentException e) {
+                        throw new PotentialException(
+                                Error.BAD_REQUEST.getStatus(),
+                                Error.BAD_REQUEST.getMessage()
+                        );
+                    }
                 })
-                .collect(Collectors.toList());
+                .toList();
 
-        subscriptionRepository.saveAll(subscriptions);
+        List<Subscription> existingSubscriptions = subscriptionRepository.findAllByUser(user);
+        Map<TopicType, Subscription> existingTopicMap = existingSubscriptions.stream()
+                .collect(Collectors.toMap(Subscription::getTopicType, subscription -> subscription));
+
+        List<Subscription> subscriptionsToAdd = new ArrayList<>();
+        List<Subscription> subscriptionsToRemove = new ArrayList<>(existingSubscriptions);
+
+        for (TopicType requestedTopic : requestedTopics) {
+            if (existingTopicMap.containsKey(requestedTopic)) {
+                subscriptionsToRemove.remove(existingTopicMap.get(requestedTopic));
+            } else {
+                Topic topic = topicRepository.findByTopicType(requestedTopic)
+                        .orElseThrow(() -> new PotentialException(
+                                Error.NOT_FOUND.getStatus(),
+                                String.format("Topic not found for type: %s", requestedTopic)
+                        ));
+                subscriptionsToAdd.add(Subscription.builder()
+                        .user(user)
+                        .topic(topic)
+                        .topicType(topic.getTopicType())
+                        .build());
+            }
+        }
+
+        if (!subscriptionsToRemove.isEmpty()) {
+            subscriptionRepository.deleteAll(subscriptionsToRemove); // 삭제
+        }
+        if (!subscriptionsToAdd.isEmpty()) {
+            subscriptionRepository.saveAll(subscriptionsToAdd); // 추가
+        }
 
         return ResponseDto.builder()
                 .status(HttpStatus.OK.value())
-                .message("구독 목록 수정이 완료되었습니다.")
+                .message("구독 목록이 성공적으로 업데이트되었습니다.")
                 .build();
     }
 }

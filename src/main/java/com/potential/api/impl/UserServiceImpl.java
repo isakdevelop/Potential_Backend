@@ -40,6 +40,8 @@ public class UserServiceImpl implements UserService {
         User user = jwtInformationComponent.certificationUserJWT(jwtInformationComponent.getUserIdFromJWT());
         user.changeUserName(userNameRequestDto.getUserName());
 
+        userRepository.save(user);
+
         return new ResponseDto(HttpStatus.OK.value(), "닉네임 변경이 완료되었습니다.");
     }
 
@@ -52,6 +54,8 @@ public class UserServiceImpl implements UserService {
         String profilePath = imageStorageComponent.saveImage(image, "user/");
 
         user.changeProfilePath(profilePath);
+
+        userRepository.save(user);
 
         return new ResponseDto(HttpStatus.OK.value(), "프로필 수정이 완료되었습니다.");
     }
