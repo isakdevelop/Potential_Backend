@@ -42,8 +42,9 @@ public class EmailServiceImpl implements EmailService {
                 .build();
     }
 
+    @Transactional
     @Override
-    public ResponseDto updateEmail(EmailRequestDto emailRequestDto) {
+    public ResponseDto emailAuthentication(EmailRequestDto emailRequestDto) {
         String password = variableComponent.generateRandomPassword();
         EmailCertification emailCertification = EmailCertification.builder()
                 .email(emailRequestDto.getEmail())

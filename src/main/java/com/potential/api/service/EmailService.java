@@ -7,7 +7,7 @@ import com.potential.api.dto.request.EmailValidateRequestDto;
 public interface EmailService {
     ResponseDto checkDuplicateEmail(EmailRequestDto emailRequestDto);
 
-    ResponseDto updateEmail(EmailRequestDto emailRequestDto);
+    ResponseDto emailAuthentication(EmailRequestDto emailRequestDto);
 
     ResponseDto validateEmail(EmailValidateRequestDto emailValidateRequestDto);
 
