@@ -4,13 +4,12 @@ import com.potential.api.model.QSubscription;
 import com.potential.api.model.QTopic;
 import com.potential.api.model.Topic;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class TopicRepositoryCustomImpl implements TopicRepositoryCustom {
+public class TopicServiceCustomImpl implements TopicServiceCustom {
     private final JPAQueryFactory jpaQueryFactory;
     private final QTopic topic = QTopic.topic;
     private final QSubscription subscription = QSubscription.subscription;

@@ -23,6 +23,7 @@ public class Topic extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private TopicType topicType;
 
+    @Builder.Default
     @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Subscription> subscriptions = new ArrayList<>();
 }
