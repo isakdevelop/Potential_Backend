@@ -48,8 +48,13 @@ public class User extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private OAuthType oAuthType;
 
+    @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Subscription> subscriptions = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Post> posts = new ArrayList<>();
 
     public void changeUserName(String userName) {
         this.userName = userName;
