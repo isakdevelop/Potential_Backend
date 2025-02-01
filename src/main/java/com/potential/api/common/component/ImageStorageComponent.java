@@ -17,7 +17,7 @@ public class ImageStorageComponent {
         String fileName;
 
         if (image == null || image.isEmpty()) {
-            fileName = "No_Image.png";
+            fileName = "defaultUserProfile.png";
         } else {
             fileName = UUID.randomUUID() + ".jpg";
         }
