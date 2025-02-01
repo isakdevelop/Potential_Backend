@@ -3,14 +3,18 @@ package com.potential.api.impl;
 import com.potential.api.common.component.ClientIpComponent;
 import com.potential.api.common.component.JwtInformationComponent;
 import com.potential.api.common.enums.Error;
+import com.potential.api.common.enums.PostStatus;
 import com.potential.api.common.exception.PotentialException;
 import com.potential.api.dto.ResponseDto;
 import com.potential.api.dto.request.PostDetailsRequestDto;
+import com.potential.api.dto.request.PostToggleHeartRequestDto;
 import com.potential.api.dto.request.WritePostRequestDto;
 import com.potential.api.dto.response.PostResponseDto;
 import com.potential.api.model.Post;
+import com.potential.api.model.PostHeart;
 import com.potential.api.model.PostViewCount;
 import com.potential.api.model.User;
+import com.potential.api.repository.PostHeartRepository;
 import com.potential.api.repository.PostRepository;
 import com.potential.api.repository.PostViewCountRepository;
 import com.potential.api.service.PostService;
@@ -25,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
+    private final PostHeartRepository postHeartRepository;
     private final PostViewCountRepository postViewCountRepository;
     private final JwtInformationComponent jwtInformationComponent;
     private final ClientIpComponent clientIpComponent;
@@ -40,6 +45,8 @@ public class PostServiceImpl implements PostService {
                 .content(writePostRequestDto.getContext())
                 .user(user)
                 .viewCount(0)
+                .heart_count(0)
+                .postStatus(PostStatus.RECRUITMENT_IN_PROGRESS)
                 .build();
 
         postRepository.save(post);
@@ -79,6 +86,37 @@ public class PostServiceImpl implements PostService {
                 .createAt(post.getCreateAt())
                 .updateAt(post.getUpdateAt())
                 .viewCount(post.getViewCount())
+                .build();
+    }
+
+    @Transactional
+    @Override
+    public ResponseDto toggleHeart(PostToggleHeartRequestDto postToggleHeartRequestDto) {
+        User user = jwtInformationComponent.certificationUserJWT(jwtInformationComponent.getUserIdFromJWT());
+
+        Post post = postRepository.findById(postToggleHeartRequestDto.getPostId())
+                .orElseThrow(() -> new PotentialException(Error.CONFLICT.getStatus(), Error.CONFLICT.getMessage()));
+
+        boolean isHearted = postHeartRepository.existsByPostAndUser(post, user);
+
+        if(isHearted) {
+            postHeartRepository.deleteByPostAndUser(post, user);
+            post.decrementHeartCount();
+        } else {
+            PostHeart postHeart = PostHeart.builder()
+                    .post(post)
+                    .user(user)
+                    .build();
+
+            postHeartRepository.save(postHeart);
+            post.incrementHeartCount();
+        }
+
+        postRepository.save(post);
+
+        return ResponseDto.builder()
+                .status(HttpStatus.OK.value())
+                .message(isHearted ? "하트를 취소했습니다." : "하트를 눌렀습니다.")
                 .build();
     }
 

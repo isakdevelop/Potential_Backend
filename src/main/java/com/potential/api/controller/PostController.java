@@ -3,6 +3,7 @@ package com.potential.api.controller;
 import com.potential.api.custom.PostServiceCustom;
 import com.potential.api.dto.ResponseDto;
 import com.potential.api.dto.request.PostDetailsRequestDto;
+import com.potential.api.dto.request.PostToggleHeartRequestDto;
 import com.potential.api.dto.request.WritePostRequestDto;
 import com.potential.api.dto.response.PostListResponseDto;
 import com.potential.api.dto.response.PostResponseDto;
@@ -37,6 +38,11 @@ public class PostController {
     @GetMapping("/postDetails")
     public ResponseEntity<PostResponseDto> postDetails(@RequestBody PostDetailsRequestDto postDetailsRequestDto) {
         return ResponseEntity.ok(postService.postDetails(postDetailsRequestDto));
+    }
+
+    @PostMapping("/toggleHeart")
+    public ResponseEntity<ResponseDto> toggleHeart(@RequestBody PostToggleHeartRequestDto postToggleHeartRequestDto) {
+        return ResponseEntity.ok(postService.toggleHeart(postToggleHeartRequestDto));
     }
 
 }

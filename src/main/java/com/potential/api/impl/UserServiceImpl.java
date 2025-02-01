@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
 
         fileDeleteComponent.deleteFile(user.getProfilePath());
 
-        String profilePath = imageStorageComponent.saveImage(image, "user/");
+        String profilePath = imageStorageComponent.saveImage(image, "profiles/");
 
         user.changeProfilePath(profilePath);
 

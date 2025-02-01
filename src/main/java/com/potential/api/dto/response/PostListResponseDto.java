@@ -12,5 +12,5 @@ public class PostListResponseDto {
     private String postTime;
     private String viewCount;
     private String commentCount;
-    private String likeCount;
+    private String heartCount;
 }

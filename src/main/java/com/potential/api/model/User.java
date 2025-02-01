@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-public class User extends BaseEntity{
+public class User extends BaseEntity {
     @Column(name = "username", unique = true, nullable = false)
     private String userName;
 
@@ -55,6 +55,10 @@ public class User extends BaseEntity{
     @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostHeart> hearts = new ArrayList<>();
 
     public void changeUserName(String userName) {
         this.userName = userName;

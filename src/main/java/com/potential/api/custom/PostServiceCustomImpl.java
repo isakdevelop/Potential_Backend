@@ -2,6 +2,7 @@ package com.potential.api.custom;
 
 import com.potential.api.dto.response.PostListResponseDto;
 import com.potential.api.model.QPost;
+import com.potential.api.model.QPostHeart;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
@@ -32,7 +33,9 @@ public class PostServiceCustomImpl implements PostServiceCustom {
                                 PostListResponseDto.class,
                                 post.id,
                                 post.title,
-                                post.user.userName
+                                post.user.userName,
+                                post.viewCount,
+                                post.heart_count
                         )
                 )
                 .from(post)
