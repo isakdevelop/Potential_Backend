@@ -62,4 +62,8 @@ public class Post extends BaseEntity {
     public void decrementHeartCount() {
         this.heart_count -= 1;
     }
+
+    public void ToggleStatus(PostStatus postStatus) {
+        this.postStatus = postStatus;
+    }
 }

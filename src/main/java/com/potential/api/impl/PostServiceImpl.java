@@ -8,6 +8,7 @@ import com.potential.api.common.exception.PotentialException;
 import com.potential.api.dto.ResponseDto;
 import com.potential.api.dto.request.PostDetailsRequestDto;
 import com.potential.api.dto.request.PostToggleHeartRequestDto;
+import com.potential.api.dto.request.PostToggleStatusRequestDto;
 import com.potential.api.dto.request.WritePostRequestDto;
 import com.potential.api.dto.response.PostResponseDto;
 import com.potential.api.model.Post;
@@ -117,6 +118,22 @@ public class PostServiceImpl implements PostService {
         return ResponseDto.builder()
                 .status(HttpStatus.OK.value())
                 .message(isHearted ? "하트를 취소했습니다." : "하트를 눌렀습니다.")
+                .build();
+    }
+
+    @Override
+    public ResponseDto toggleStatus(PostToggleStatusRequestDto postToggleStatusRequestDto) {
+        User user = jwtInformationComponent.certificationUserJWT(jwtInformationComponent.getUserIdFromJWT());
+        Post post = postRepository.findById(postToggleStatusRequestDto.getPostId())
+                .orElseThrow(() -> new PotentialException(Error.CONFLICT.getStatus(), Error.CONFLICT.getMessage()));
+
+        post.ToggleStatus(PostStatus.valueOf(postToggleStatusRequestDto.getAfterStatus()));
+
+        postRepository.save(post);
+
+        return ResponseDto.builder()
+                .status(HttpStatus.OK.value())
+                .message("게시글 상태 변경이 완료되었습니다.")
                 .build();
     }
 
