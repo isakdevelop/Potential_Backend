@@ -2,6 +2,7 @@ package com.potential.api.controller;
 
 import com.potential.api.dto.ResponseDto;
 import com.potential.api.dto.request.WriteCommentRequestDto;
+import com.potential.api.dto.request.WriteReplyRequestDto;
 import com.potential.api.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class CommentController {
     private final CommentService commentService;
 
-    @PostMapping("/postComment")
+    @PostMapping("/writeComment")
     public ResponseEntity<ResponseDto> writeComment(@RequestBody WriteCommentRequestDto writeCommentRequestDto) {
         return ResponseEntity.ok(commentService.writeComment(writeCommentRequestDto));
+    }
+
+    @PostMapping("/writeReply")
+    public ResponseEntity<ResponseDto> writeReply(@RequestBody WriteReplyRequestDto writeReplyRequestDto) {
+        return ResponseEntity.ok(commentService.writeReply(writeReplyRequestDto));
     }
 }
