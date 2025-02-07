@@ -6,6 +6,7 @@ import com.potential.api.common.enums.Error;
 import com.potential.api.common.enums.PostStatus;
 import com.potential.api.common.exception.PotentialException;
 import com.potential.api.dto.ResponseDto;
+import com.potential.api.dto.request.PostDeleteRequestDto;
 import com.potential.api.dto.request.PostDetailsRequestDto;
 import com.potential.api.dto.request.PostToggleHeartRequestDto;
 import com.potential.api.dto.request.PostToggleStatusRequestDto;
@@ -121,6 +122,7 @@ public class PostServiceImpl implements PostService {
                 .build();
     }
 
+    @Transactional
     @Override
     public ResponseDto toggleStatus(PostToggleStatusRequestDto postToggleStatusRequestDto) {
         User user = jwtInformationComponent.certificationUserJWT(jwtInformationComponent.getUserIdFromJWT());
@@ -135,6 +137,29 @@ public class PostServiceImpl implements PostService {
                 .status(HttpStatus.OK.value())
                 .message("게시글 상태 변경이 완료되었습니다.")
                 .build();
+    }
+
+    @Transactional
+    @Override
+    public ResponseDto deletePost(PostDeleteRequestDto postDeleteRequestDto) {
+        User user = jwtInformationComponent.certificationUserJWT(jwtInformationComponent.getUserIdFromJWT());
+
+        Post post = postRepository.findById(postDeleteRequestDto.getPostId())
+                .orElseThrow(() -> new PotentialException(Error.CONFLICT.getStatus(), Error.CONFLICT.getMessage()));
+
+        if (post.getUser().getId().equals(user.getId())) {
+            postRepository.delete(post);
+
+            return ResponseDto.builder()
+                    .status(HttpStatus.OK.value())
+                    .message("게시글 삭제가 완료되었습니다.")
+                    .build();
+        } else {
+            return ResponseDto.builder()
+                    .status(HttpStatus.CONFLICT.value())
+                    .message("게시글 삭제에 대한 권한이 없습니다.")
+                    .build();
+        }
     }
 
     @Scheduled(cron = "0 0 0 * * ?")

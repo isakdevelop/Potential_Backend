@@ -1,6 +1,7 @@
 package com.potential.api.service;
 
 import com.potential.api.dto.ResponseDto;
+import com.potential.api.dto.request.PostDeleteRequestDto;
 import com.potential.api.dto.request.PostDetailsRequestDto;
 import com.potential.api.dto.request.PostToggleHeartRequestDto;
 import com.potential.api.dto.request.PostToggleStatusRequestDto;
@@ -15,4 +16,6 @@ public interface PostService {
     ResponseDto toggleHeart(PostToggleHeartRequestDto postToggleHeartRequestDto);
 
     ResponseDto toggleStatus(PostToggleStatusRequestDto postToggleStatusRequestDto);
+
+    ResponseDto deletePost(PostDeleteRequestDto postDeleteRequestDto);
 }

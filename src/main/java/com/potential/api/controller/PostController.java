@@ -2,6 +2,7 @@ package com.potential.api.controller;
 
 import com.potential.api.custom.PostServiceCustom;
 import com.potential.api.dto.ResponseDto;
+import com.potential.api.dto.request.PostDeleteRequestDto;
 import com.potential.api.dto.request.PostDetailsRequestDto;
 import com.potential.api.dto.request.PostToggleHeartRequestDto;
 import com.potential.api.dto.request.PostToggleStatusRequestDto;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,6 +51,11 @@ public class PostController {
     @PostMapping("/toggleStatus")
     public ResponseEntity<ResponseDto> toggleStatus(@RequestBody PostToggleStatusRequestDto postToggleStatusRequestDto) {
         return ResponseEntity.ok(postService.toggleStatus(postToggleStatusRequestDto));
+    }
+
+    @DeleteMapping("/deletePost")
+    public ResponseEntity<ResponseDto> deletePost(@RequestBody PostDeleteRequestDto postDeleteRequestDto) {
+        return ResponseEntity.ok(postService.deletePost(postDeleteRequestDto));
     }
 
 }
